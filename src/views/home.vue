@@ -10,9 +10,9 @@
     <DxTextBox v-model="CNTR_NO" :value="CNTR_NO" />
 
     <DxButton text="api" :width="150" @click="callAPI" />
-    <DxButton text="api222" @click="callAPI2" />
+    <!-- <DxButton text="api222" @click="callAPI2" /> -->
 
-    <DxAccordion :data-source="accordionData" />
+    <!-- <DxAccordion :data-source="accordionData" /> -->
 
     <DxDataGrid
       :columns="columns"
@@ -50,7 +50,7 @@
 import axios from "axios";
 import DxButton from "devextreme-vue/button";
 import DxTextBox from "devextreme-vue/text-box";
-import DxAccordion from "devextreme-vue/accordion";
+// import DxAccordion from "devextreme-vue/accordion";
 import notify from "devextreme/ui/notify";
 import {
   DxDataGrid,
@@ -77,7 +77,7 @@ export default {
     DxScrolling,
     DxPaging,
     DxPager,
-    DxAccordion,
+    // DxAccordion,
   },
   data() {
     return {
