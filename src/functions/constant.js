@@ -3,10 +3,26 @@ export const API_URL = "http://localhost:8888/frameworkapi/api";
 export const MAIN_COD = {
   GATE_IO: "GIO",
   CNTR_STS: "CTS",
+  COP_STS: "COPSTS",
+  COP_MOD: "COPMOD",
+  YON: "YON",
+  FOE: "FOE",
+};
+
+export const MAIN_COD_ITEM_TYP = {
+  MAIN_COD: "MAIN_COD",
+  COD_NAME: "COD_NAME",
+  COD_DESC: "COD_DESC",
+  COD_NAME_DESC: "COD_NAME_DESC",
+  MAIN_COD_DESC: "MAIN_COD_DESC",
+};
+
+export const GET_MAIN_CODE_OPT = {
+  DISPLAY_SEQ: "DISPLAY_SEQ",
+  MAIN_COD: "MAIN_COD",
 };
 
 export const GENERAL_COD = {
-  CARGO_TYP: "CARGO_TYP",
   MASH_GRP: "MASH_GRP",
   BITT: "BITT",
   AGS_BASIC_CATEGORY: "AGS_BASIC_CATEGORY",

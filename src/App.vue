@@ -7,12 +7,12 @@
         :is-x-small="screen.getScreenSizeInfo.isXSmall"
         :is-large="screen.getScreenSizeInfo.isLarge"
       >
-      <div class="content">
-        <router-view></router-view>
-      </div>
-        <template #footer>
+        <div class="content">
+          <router-view></router-view>
+        </div>
+        <!-- <template #footer>
           <app-footer />
-        </template>
+        </template> -->
       </component>
     </div>
   </div>
@@ -26,7 +26,7 @@ import {
   reactive,
   onMounted,
   onBeforeUnmount,
-  computed
+  computed,
 } from "vue";
 
 function getScreenSizeInfo() {
@@ -35,13 +35,13 @@ function getScreenSizeInfo() {
   return {
     isXSmall: screenSizes["screen-x-small"],
     isLarge: screenSizes["screen-large"],
-    cssClasses: Object.keys(screenSizes).filter(cl => screenSizes[cl])
+    cssClasses: Object.keys(screenSizes).filter((cl) => screenSizes[cl]),
   };
 }
 
 export default {
   components: {
-    AppFooter
+    AppFooter,
   },
   setup() {
     const vm = getCurrentInstance();
@@ -49,8 +49,8 @@ export default {
     const title = vm.proxy.$appInfo.title;
     const screen = reactive({ getScreenSizeInfo: {} });
     screen.getScreenSizeInfo = getScreenSizeInfo();
-    
-    function screenSizeChanged () {
+
+    function screenSizeChanged() {
       screen.getScreenSizeInfo = getScreenSizeInfo();
     }
 
@@ -69,9 +69,9 @@ export default {
     return {
       title,
       screen,
-      cssClasses
+      cssClasses,
     };
-  }
+  },
 };
 </script>
 

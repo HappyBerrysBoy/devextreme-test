@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <h2 class="content-block">Pre Gate In/Out List</h2>
+  <div class="content-block">
+    <h2>Pre Gate In/Out List</h2>
 
     <DxBox :height="75" direction="row" width="100%">
       <DxItem :ratio="1">
@@ -9,17 +9,27 @@
             <p>Truck No</p>
           </DxItem>
           <DxItem :ratio="1">
-            <DxTextBox v-model:value="params.TRK_NO" />
+            <DxTextBox v-model:value="params.TRK_NO" @enter-key="inquiryData" />
           </DxItem>
         </DxBox>
       </DxItem>
       <DxItem :ratio="1">
-        <DxBox direction="col">
+        <DxBox direction="col" width="100%">
           <DxItem :ratio="1">
-            <p>Terminal</p>
+            <p>OPR</p>
           </DxItem>
           <DxItem :ratio="1">
-            <DxSelectBox :items="tmnCod" />
+            <DxSelectBox :items="oprList" v-model:value="params.CNTR_OPR" />
+          </DxItem>
+        </DxBox>
+      </DxItem>
+      <DxItem :ratio="1">
+        <DxBox direction="col" width="100%">
+          <DxItem :ratio="1">
+            <p>F/E</p>
+          </DxItem>
+          <DxItem :ratio="1">
+            <DxSelectBox :items="foe" v-model:value="params.CNTR_FOE" />
           </DxItem>
         </DxBox>
       </DxItem>
@@ -29,7 +39,10 @@
             <p>CntrNo</p>
           </DxItem>
           <DxItem :ratio="1">
-            <DxTextBox v-model:value="params.CNTR_NO" />
+            <DxTextBox
+              v-model:value="params.CNTR_NO"
+              @enter-key="inquiryData"
+            />
           </DxItem>
         </DxBox>
       </DxItem>
@@ -75,7 +88,10 @@
             <p>Process Tag</p>
           </DxItem>
           <DxItem :ratio="1">
-            <DxSelectBox :items="processTag" />
+            <DxSelectBox
+              :items="processTag"
+              v-model:value="params.PROCESS_TAG"
+            />
           </DxItem>
         </DxBox>
       </DxItem>
@@ -85,27 +101,7 @@
             <p>Mode</p>
           </DxItem>
           <DxItem :ratio="1">
-            <DxTextBox v-model:value="params.MODE" />
-          </DxItem>
-        </DxBox>
-      </DxItem>
-      <DxItem :ratio="1">
-        <DxBox direction="col" width="100%">
-          <DxItem :ratio="1">
-            <p>OPR</p>
-          </DxItem>
-          <DxItem :ratio="1">
-            <DxTextBox v-model:value="params.CNTR_OPR" />
-          </DxItem>
-        </DxBox>
-      </DxItem>
-      <DxItem :ratio="1">
-        <DxBox direction="col" width="100%">
-          <DxItem :ratio="1">
-            <p>F/E</p>
-          </DxItem>
-          <DxItem :ratio="1">
-            <DxTextBox v-model:value="params.CNTR_FOE" />
+            <DxSelectBox :items="copMode" v-model:value="params.MODE" />
           </DxItem>
         </DxBox>
       </DxItem>
@@ -115,23 +111,39 @@
             <p>Cargo</p>
           </DxItem>
           <DxItem :ratio="1">
-            <DxSelectBox :items="cargoTyp" />
+            <DxSelectBox :items="cargoTyp" v-model:value="params.CARGO_TYP" />
+          </DxItem>
+        </DxBox>
+      </DxItem>
+      <DxItem :ratio="1">
+        <DxBox direction="col" width="100%">
+          <DxItem :ratio="1">
+            <p>Error</p>
+          </DxItem>
+          <DxItem :ratio="1">
+            <DxSelectBox :items="errCode" v-model:value="params.ERROR" />
           </DxItem>
         </DxBox>
       </DxItem>
     </DxBox>
 
-    <DxButton text="Inquiry" :width="150" @click="callAPI" />
-    Count:{{ count }}
-    <DxButton text="Test Action" :width="150" @click="test" />
+    <DxBox id="btnBox" :align="end" :crossAlign="end">
+      <DxItem :baseSize="150">
+        <DxButton id="inquiryBtn" text="Inquiry" @click="inquiryData" />
+      </DxItem>
+    </DxBox>
 
     <DxDataGrid
+      id="gridData"
       :columns="columns"
       :selection="{ mode: 'single' }"
       :show-borders="true"
       :data-source="gridSource"
+      :filter-enabled="true"
+      :columns-auto-width="true"
       @exporting="onExporting"
     >
+      <DxFilterRow :visible="true" />
       <DxColumnChooser :enabled="true" />
       <DxColumnFixing :enabled="true" />
       <DxScrolling row-rendering-mode="virtual" />
@@ -146,37 +158,86 @@
         :show-navigation-buttons="showNavButtons"
       />
 
-      <DxColumn :fixed="true" data-field="CNTR_NO" />
-      <DxColumn data-field="VVD" />
-      <DxColumn data-field="CNTR_OPR" />
-      <DxColumn data-field="TS" />
-      <DxColumn data-field="VVD_YEAR" />
-      <DxColumn data-field="CLS_NM" />
-      <DxColumn data-field="CNTR_SEQ" />
+      <DxColumn
+        data-field="CNTR_NO"
+        :width="130"
+        caption="CNTR"
+        :fixed="true"
+      />
+      <DxColumn
+        data-field="TRK_NO"
+        :width="120"
+        caption="TRK_NO"
+        :fixed="true"
+      />
+      <DxColumn data-field="GATE_IO" :width="60" caption="I/O" :fixed="true" />
+      <DxColumn data-field="TYPSIZ" :width="80" caption="SZTP" :fixed="true" />
+      <DxColumn data-field="CNTR_FOE" :width="60" caption="F/E" />
+      <DxColumn data-field="CNTR_OPR" :width="80" caption="OPR" />
+      <DxColumn data-field="POD" caption="POD" :visible="false" />
+      <DxColumn data-field="RF" caption="RF" :visible="false" />
+      <DxColumn data-field="VENT" caption="VENT" :visible="false" />
+      <DxColumn data-field="VENT_UNIT" caption="UNIT" :visible="false" />
+      <DxColumn data-field="CARGO_TYP" caption="CARGO" :visible="false" />
+      <DxColumn data-field="DG_IMDG" caption="IMDG" :visible="false" />
+      <DxColumn data-field="DG_UNNO" caption="UNNO" :visible="false" />
+      <DxColumn data-field="VGM_WGT" caption="VGM" :visible="false" />
+      <DxColumn data-field="CNTR_WGT" caption="WGT" :visible="false" />
+      <DxColumn data-field="INPUT_DTE" :width="150" caption="RCV DTE" />
+      <DxColumn data-field="VVD_YEAR" :width="80" caption="YEAR" />
+      <DxColumn data-field="VVD" :width="110" caption="VVD" />
+      <DxColumn data-field="TS" caption="TS" :visible="false" />
+      <DxColumn data-field="OPR_BKG_NO" caption="BKG NO" :visible="false" />
+      <DxColumn data-field="DO_NO" caption="DO" :visible="false" />
+      <DxColumn data-field="TRK_CO" :width="110" caption="TRK CO" />
+      <DxColumn data-field="REAL_SENDER" :width="110" caption="Sender" />
+      <DxColumn data-field="INPUT_PSN" caption="INPUT" :visible="false" />
+      <DxColumn data-field="CNTR_INSP" caption="INSP" :visible="false" />
+      <DxColumn data-field="OOG" caption="OOG" :visible="false" />
+      <DxColumn data-field="CLL" caption="CLL" :visible="false" />
+      <DxColumn data-field="XRAY" caption="XRAY" :visible="false" />
+      <DxColumn data-field="DLV_MODE" :width="60" caption="DLV" />
+      <DxColumn data-field="RCV_MODE" :width="80" caption="MODE" />
+      <DxColumn data-field="PROCESS_TAG" caption="PROCESS" />
+      <DxColumn data-field="MSG" caption="MSG" :visible="false" />
+      <DxColumn data-field="ISSUE_SEQ" caption="ISSUE" :visible="false" />
     </DxDataGrid>
+
+    <DxLoadPanel
+      :position="{ of: `#gridData` }"
+      v-model:visible="loadingVisible"
+      shading-color="rgba(0,0,0,0.4)"
+    />
   </div>
 </template>
 
 <style>
-.dx-box-flex {
-  padding: 0 20px 0px 20px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  grid-column-gap: 5px;
+#btnBox {
+  justify-content: end;
 }
 
-.dx-box-item {
-  min-width: 120px;
-  max-width: 120px;
+.dx-box-flex {
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  grid-column-gap: 30px;
+}
+
+.dx-texteditor-input {
+  text-transform: uppercase;
 }
 </style>
 
 <script>
 import axios from "axios";
 import { mapState, mapActions, mapGetters } from "vuex";
-import { getMainCode } from "@/functions/commfunc";
-import { MAIN_COD, API_URL } from "@/functions/constant";
+import { getMainCode, getGeneralCode } from "@/functions/commfunc";
+import {
+  MAIN_COD,
+  GENERAL_COD,
+  MAIN_COD_ITEM_TYP,
+  API_URL,
+} from "@/functions/constant";
+import { DxLoadPanel } from "devextreme-vue/load-panel";
 import DxButton from "devextreme-vue/button";
 import DxDateBox from "devextreme-vue/date-box";
 import DxTextBox from "devextreme-vue/text-box";
@@ -193,6 +254,7 @@ import {
   DxScrolling,
   DxPaging,
   DxPager,
+  DxFilterRow,
 } from "devextreme-vue/data-grid";
 
 export default {
@@ -208,47 +270,117 @@ export default {
     DxScrolling,
     DxPaging,
     DxPager,
-    // DxForm,
     DxSelectBox,
     DxBox,
     DxItem,
     DxDateBox,
+    DxLoadPanel,
+    DxFilterRow,
   },
   data() {
     return {
+      loadingVisible: false,
       gridSource: {},
       gateIO: [],
-      tmnCod: ["*", "U", "H", "P"],
-      processTag: ["*", "N", "Y", "D", "W"],
-      cargoTyp: ["*", "DG", "RD", "RF", "SD", "SP", "ST"],
-      programId: "HITOPS3-GTE-CTL-S-LSTPREGATEINOUT",
+      processTag: [],
+      cargoTyp: [],
+      copMode: [],
+      errCode: [],
+      foe: [],
+      oprList: [],
+      programId: "HITOPS3-GTE-CTL-S-LSTPREGATEINOUT-UD",
       params: {
-        TRK_NO: "2468",
-        CNTR_NO: "",
-        TMN_COD: "",
-        GATE_IO: "",
-        FROM_DTE: "2021-09-01",
-        TO_DTE: new Date(),
-        PROCESS_TAG: "",
         MODE: "",
+        PROCESS_TAG: "",
+        FROM_DTE: new Date(),
+        TO_DTE: new Date(),
+        GATE_IO: "",
+        TRK_CO: "%%%",
+        TRK_NO: "",
+        ERROR: "",
+        CARGO_TYP: "",
         CNTR_OPR: "",
         CNTR_FOE: "",
-        CARGO_TYP: "",
+        RECEIVER: "PNITY050",
+        CNTR_NO: "",
       },
     };
   },
   computed: {
-    ...mapGetters({ doubleCount: "moduleA/doubleCount" }),
+    ...mapGetters({
+      doubleCount: "moduleA/doubleCount",
+      tmnCod: "GlobalConstant/getTmnCod",
+    }),
   },
   created() {
-    getMainCode(MAIN_COD.GATE_IO, true, true)
+    getMainCode(MAIN_COD.GATE_IO, true, false, MAIN_COD_ITEM_TYP.COD_NAME)
       .then((data) => {
         this.gateIO = data;
         this.params.GATE_IO = data[0];
       })
       .catch((err) => {
         console.log(err);
+        notify(`Fail to load code data(${MAIN_COD.GATE_IO})`);
+      });
+
+    getMainCode(MAIN_COD.YON, true, false, MAIN_COD_ITEM_TYP.MAIN_COD)
+      .then((data) => {
+        this.errCode = data;
+        this.params.ERROR = data[0];
+      })
+      .catch((err) => {
+        console.log(err);
+        notify(`Fail to load code data(${MAIN_COD.GATE_IO})`);
+      });
+
+    getMainCode(MAIN_COD.FOE, true, false, MAIN_COD_ITEM_TYP.COD_NAME)
+      .then((data) => {
+        this.foe = data;
+        this.params.CNTR_FOE = data[0];
+      })
+      .catch((err) => {
+        console.log(err);
+        notify(`Fail to load code data(${MAIN_COD.GATE_IO})`);
+      });
+
+    getMainCode(MAIN_COD.COP_STS, true, false, MAIN_COD_ITEM_TYP.MAIN_COD)
+      .then((data) => {
+        this.processTag = data;
+        this.params.PROCESS_TAG = data[1];
+      })
+      .catch((err) => {
+        console.log(err);
+        notify(`Fail to load code data(${MAIN_COD.COP_STS})`);
+      });
+
+    getMainCode(MAIN_COD.COP_MOD, true, false, MAIN_COD_ITEM_TYP.COD_NAME)
+      .then((data) => {
+        this.copMode = data;
+        this.params.MODE = data[0];
+      })
+      .catch((err) => {
+        console.log(err);
         notify(`Fail to load code data`);
+      });
+
+    getGeneralCode(GENERAL_COD.OPERATOR, true, false)
+      .then((data) => {
+        this.oprList = data;
+        this.params.CNTR_OPR = data[0];
+      })
+      .catch((err) => {
+        console.log(err);
+        notify(`Fail to load code data(${GENERAL_COD.CARGO_TYPE})`);
+      });
+
+    getGeneralCode(GENERAL_COD.CARGO_TYPE, true, false)
+      .then((data) => {
+        this.cargoTyp = data;
+        this.params.CARGO_TYP = data[0];
+      })
+      .catch((err) => {
+        console.log(err);
+        notify(`Fail to load code data(${GENERAL_COD.CARGO_TYPE})`);
       });
   },
   beforeMount() {},
@@ -265,7 +397,7 @@ export default {
       incrementIfOddOnRootSum: "moduleA/incrementIfOddOnRootSum",
       setTmnCod: "GlobalConstant/setTmnCod",
     }),
-    test() {
+    test(e) {
       this.incrementIfOddOnRootSum({ tt: 12312 });
       this.setTmnCod({ tmnCod: "QQ" });
       console.log(`setTmnCod`, this.$store.getters["GlobalConstant/getTmnCod"]);
@@ -274,25 +406,74 @@ export default {
       console.log(`doubleCount`, this.doubleCount);
       notify(`The OK button was clicked ${this.$store.state.moduleA.count}`);
     },
-    callAPI() {
-      console.log(`this.CNTR_NO:${this.CNTR_NO}, this.TMN_COD:${this.TMN_COD}`);
-      const params = { CNTR_NO: this.CNTR_NO, TMN_COD: this.TMN_COD };
+    inquiryData() {
+      const param = JSON.parse(JSON.stringify(this.params));
 
-      notify("The OK button was clicked");
+      param["TMN_COD"] = this.tmnCod;
+      param["FROM_DTE"] =
+        param["FROM_DTE"].substring(0, 10).replace(/-/g, "") + "000000";
+      param["TO_DTE"] =
+        param["TO_DTE"].substring(0, 10).replace(/-/g, "") + "235959";
 
+      if (param.MODE === "*") {
+        param.MODE = "%%%";
+      }
+
+      if (param.GATE_IO === "*") {
+        param.GATE_IO = "%%%";
+      }
+
+      if (param.TRK_NO === "") {
+        param.TRK_NO = "%%%";
+      }
+
+      if (param.CNTR_NO === "") {
+        param.CNTR_NO = "%%%";
+      }
+
+      if (param.ERROR === "*") {
+        param.ERROR = "%%%";
+      }
+
+      if (param.CARGO_TYP === "*") {
+        param.CARGO_TYP = "";
+      }
+
+      if (param.CNTR_OPR === "*") {
+        param.CNTR_OPR = "%%%";
+      }
+
+      if (param.CNTR_FOE === "*") {
+        param.CNTR_FOE = "%%%";
+      }
+
+      if (this.PROCESS_TAG == "N") {
+        this.programId = "HITOPS3-GTE-CTL-S-LSTPREGATEINOUT-UD";
+      } else {
+        this.programId = "HITOPS3-GTE-CTL-S-LSTPREGATEINOUT2-UD";
+      }
+
+      console.log(
+        `programid:${this.programId}, parameter`,
+        JSON.stringify(param)
+      );
+
+      this.loadingVisible = true;
       axios
         .post(API_URL, {
           programId: this.programId,
-          param: JSON.stringify(params),
+          param: JSON.stringify(param),
           fileName: "TEST.json",
         })
         .then((res) => {
           console.log(res.data);
           this.gridSource = res.data;
-          notify(`Fail to load query data`);
+          this.loadingVisible = false;
+        })
+        .catch((err) => {
+          notify("Fail to load query data");
+          this.loadingVisible = false;
         });
-
-      console.log("test");
     },
   },
 };

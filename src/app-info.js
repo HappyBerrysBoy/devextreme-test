@@ -1,3 +1,3 @@
 export default {
-  title: "HiTops Web",
+  title: "HI-TOPS WEB",
 };

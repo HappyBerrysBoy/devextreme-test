@@ -2,27 +2,27 @@
   <form class="login-form" @submit.prevent="onSubmit">
     <dx-form :form-data="formData" :disabled="loading">
       <dx-item
-        data-field="email"
+        data-field="id"
         editor-type="dxTextBox"
-        :editor-options="{ stylingMode: 'filled', placeholder: 'Email', mode: 'email' }"
+        :editor-options="{
+          stylingMode: 'filled',
+          placeholder: 'Id',
+          mode: 'id',
+        }"
       >
         <dx-required-rule message="Email is required" />
-        <dx-email-rule message="Email is invalid" />
         <dx-label :visible="false" />
       </dx-item>
       <dx-item
-        data-field='password'
-        editor-type='dxTextBox'
-        :editor-options="{ stylingMode: 'filled', placeholder: 'Password', mode: 'password' }"
+        data-field="password"
+        editor-type="dxTextBox"
+        :editor-options="{
+          stylingMode: 'filled',
+          placeholder: 'Password',
+          mode: 'password',
+        }"
       >
         <dx-required-rule message="Password is required" />
-        <dx-label :visible="false" />
-      </dx-item>
-      <dx-item
-        data-field="rememberMe"
-        editor-type="dxCheckBox"
-        :editor-options="{ text: 'Remember me', elementAttr: { class: 'form-text' } }"
-      >
         <dx-label :visible="false" />
       </dx-item>
       <dx-button-item>
@@ -34,25 +34,16 @@
         >
         </dx-button-options>
       </dx-button-item>
-      <dx-item>
-        <template #default>
-          <div class="link">
-            <router-link to="/reset-password">Forgot password?</router-link>
-          </div>
-        </template>
-      </dx-item>
-      <dx-button-item>
-        <dx-button-options
-          text="Create an account"
-          width="100%"
-          :on-click="onCreateAccountClick"
-        />
-      </dx-button-item>
       <template #signInTemplate>
         <div>
           <span class="dx-button-text">
-            <dx-load-indicator v-if="loading" width="24px" height="24px" :visible="true" />
-            <span v-if="!loading">Sign In</span>
+            <dx-load-indicator
+              v-if="loading"
+              width="24px"
+              height="24px"
+              :visible="true"
+            />
+            <span v-if="!loading">Log In</span>
           </span>
         </div>
       </template>
@@ -64,18 +55,17 @@
 import DxLoadIndicator from "devextreme-vue/load-indicator";
 import DxForm, {
   DxItem,
-  DxEmailRule,
   DxRequiredRule,
   DxLabel,
   DxButtonItem,
-  DxButtonOptions
+  DxButtonOptions,
 } from "devextreme-vue/form";
-import notify from 'devextreme/ui/notify';
+import notify from "devextreme/ui/notify";
 
 import auth from "../auth";
 
-import { reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { reactive, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 export default {
   setup() {
@@ -83,19 +73,15 @@ export default {
     const router = useRouter();
 
     const formData = reactive({
-      email:"",
-      password:""
+      id: "",
+      password: "",
     });
     const loading = ref(false);
 
-    function onCreateAccountClick() {
-      router.push("/create-account");
-    }
-
     async function onSubmit() {
-      const { email, password } = formData;
+      const { id, password } = formData;
       loading.value = true;
-      const result = await auth.logIn(email, password);
+      const result = await auth.logIn(id, password);
       if (!result.isOk) {
         loading.value = false;
         notify(result.message, "error", 2000);
@@ -108,7 +94,7 @@ export default {
       formData,
       loading,
       onCreateAccountClick,
-      onSubmit
+      onSubmit,
     };
   },
   components: {
@@ -119,8 +105,8 @@ export default {
     DxItem,
     DxLabel,
     DxButtonItem,
-    DxButtonOptions
-  }
+    DxButtonOptions,
+  },
 };
 </script>
 

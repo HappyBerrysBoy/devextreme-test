@@ -1,7 +1,7 @@
 export default {
   namespaced: true,
   state: () => ({
-    tmnCod: "H",
+    tmnCod: "B",
     userId: "",
     userName: "",
     groupId: "",
