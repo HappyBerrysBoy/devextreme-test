@@ -7,6 +7,7 @@ export default {
     groupId: "",
     groupName: "",
     rank: "",
+    email: "",
   }),
   mutations: {
     setTmnCod(state, value) {
@@ -26,6 +27,9 @@ export default {
     },
     setRank(state, value) {
       state.rank = value;
+    },
+    setEmail(state, value) {
+      state.email = value;
     },
   },
   getters: {
@@ -47,8 +51,20 @@ export default {
     getRank(state, getters, rootState) {
       return state.rank;
     },
+    getEmail(state, getters, rootState) {
+      return state.email;
+    },
   },
   actions: {
+    setUserInfo({ state, commit, rootState }, payload) {
+      // console.log("payload.tt)", payload.tt);
+      // if ((state.count + rootState.moduleA.count) % 2 === 1) {
+      commit("setTmnCod", payload.TMN_COD);
+      commit("setEmail", payload.E_MAIL);
+      commit("setUserName", payload.NAME);
+      commit("setUserId", payload.USER_ID);
+      // }
+    },
     setTmnCod({ state, commit, rootState }, payload) {
       // console.log("payload.tt)", payload.tt);
       // if ((state.count + rootState.moduleA.count) % 2 === 1) {

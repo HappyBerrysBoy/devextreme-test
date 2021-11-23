@@ -4,7 +4,11 @@
       <dx-item
         data-field="email"
         editor-type="dxTextBox"
-        :editor-options="{ stylingMode: 'filled', placeholder: 'Email', mode: 'email' }"
+        :editor-options="{
+          stylingMode: 'filled',
+          placeholder: 'Email',
+          mode: 'email',
+        }"
       >
         <dx-required-rule message="Email is required" />
         <dx-email-rule message="Email is invalid" />
@@ -30,8 +34,13 @@
       <template #resetTemplate>
         <div>
           <span class="dx-button-text">
-              <dx-load-indicator v-if="loading" width="24px" height="24px" :visible="true" />
-              <span v-if="!loading">Reset my password</span>
+            <dx-load-indicator
+              v-if="loading"
+              width="24px"
+              height="24px"
+              :visible="true"
+            />
+            <span v-if="!loading">Reset my password</span>
           </span>
         </div>
       </template>
@@ -46,16 +55,17 @@ import DxForm, {
   DxButtonItem,
   DxButtonOptions,
   DxRequiredRule,
-  DxEmailRule
-} from 'devextreme-vue/form';
-import DxLoadIndicator from 'devextreme-vue/load-indicator';
-import notify from 'devextreme/ui/notify';
-import { ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
+  DxEmailRule,
+} from "devextreme-vue/form";
+import DxLoadIndicator from "devextreme-vue/load-indicator";
+import notify from "devextreme/ui/notify";
+import { ref, reactive } from "vue";
+import { useRouter } from "vue-router";
 
 import auth from "../auth";
 
-const notificationText = 'We\'ve sent a link to reset your password. Check your inbox.';
+const notificationText =
+  "We've sent a link to reset your password. Check your inbox.";
 
 export default {
   components: {
@@ -66,14 +76,14 @@ export default {
     DxButtonOptions,
     DxRequiredRule,
     DxEmailRule,
-    DxLoadIndicator
+    DxLoadIndicator,
   },
   setup() {
     const router = useRouter();
 
     const loading = ref(false);
     const formData = reactive({
-      email:""
+      email: "",
     });
 
     async function onSubmit() {
@@ -91,13 +101,13 @@ export default {
       }
     }
 
-    return { 
+    return {
       loading,
       formData,
-      onSubmit
-    }
-  }
-}
+      onSubmit,
+    };
+  },
+};
 </script>
 
 <style lang="scss">

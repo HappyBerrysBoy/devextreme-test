@@ -14,7 +14,7 @@ export const getMainCode = (
   itemType,
   dispSeq = GET_MAIN_CODE_OPT.DISPLAY_SEQ
 ) => {
-  const params = { COD_TYP: codTyp };
+  const params = { COD_TYP: codTyp, PASS_CHK_TMNCOD: "Y" };
   const retArray = [];
   let programId = "";
 

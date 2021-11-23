@@ -1,10 +1,8 @@
 <template>
   <div class="user-panel">
     <div class="user-info">
-      <div class="image-container">
-        <div class="user-image" />
-      </div>
-      <div class="user-name">{{email}}</div>
+      <div class="user-name">{{ id }}</div>
+      <div class="user-name">{{ name }}님</div>
     </div>
 
     <dx-context-menu
@@ -34,13 +32,15 @@ export default {
   props: {
     menuMode: String,
     menuItems: Array,
-    email: String
+    email: String,
+    id: String,
+    name: String,
   },
   components: {
     DxContextMenu,
     DxPosition,
-    DxList
-  }
+    DxList,
+  },
 };
 </script>
 
@@ -50,6 +50,7 @@ export default {
 .user-info {
   display: flex;
   align-items: center;
+  padding: 5px;
 
   .dx-toolbar-menu-section & {
     padding: 10px 6px;

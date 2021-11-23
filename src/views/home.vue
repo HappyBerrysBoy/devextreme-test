@@ -1,84 +1,40 @@
 <template>
   <div>
-    <h2 class="content-block">Home</h2>
+    <h2 class="content-block">HITOPS3 WEB</h2>
 
-    <p>Program ID</p>
-    <DxTextBox v-model:value="programId" />
-    <p>TMN_COD</p>
-    <DxTextBox v-model:value="TMN_COD" />
-    <p>CNTR_NO</p>
-    <DxTextBox v-model="CNTR_NO" :value="CNTR_NO" />
-
-    <DxButton text="api" :width="150" @click="callAPI" />
-    <!-- <DxButton text="api222" @click="callAPI2" /> -->
-
-    <!-- <DxAccordion :data-source="accordionData" /> -->
-
-    <DxDataGrid
-      :columns="columns"
-      :selection="{ mode: 'single' }"
-      :show-borders="true"
-      :data-source="gridSource"
-      @exporting="onExporting"
-    >
-      <DxColumnChooser :enabled="true" />
-      <DxColumnFixing :enabled="true" />
-      <DxScrolling row-rendering-mode="virtual" />
-      <DxExport :enabled="true" :allow-export-selected-data="true" />
-      <DxSelection mode="multiple" />
-      <DxPaging :page-size="10" />
-      <DxPager
-        :visible="true"
-        :allowed-page-sizes="pageSizes"
-        :display-mode="displayMode"
-        :show-info="showInfo"
-        :show-navigation-buttons="showNavButtons"
-      />
-
-      <DxColumn :fixed="true" data-field="CNTR_NO" />
-      <DxColumn data-field="VVD" />
-      <DxColumn data-field="CNTR_OPR" />
-      <DxColumn data-field="TS" />
-      <DxColumn data-field="VVD_YEAR" />
-      <DxColumn data-field="CLS_NM" />
-      <DxColumn data-field="CNTR_SEQ" />
-    </DxDataGrid>
+    <DxBox direction="row" width="100%" :height="500">
+      <DxItem :ratio="1">
+        <template #default>
+          <h5>Recent</h5>
+        </template>
+      </DxItem>
+      <DxItem :ratio="1">
+        <template #default>
+          <h5>Short Cut</h5>
+        </template>
+      </DxItem>
+    </DxBox>
   </div>
 </template>
 
+<style>
+/* .dx-box-flex.dx-box {
+  padding: 20px;
+}
+
+.dx-box-flex.dx-box .dx-item:first-child {
+  border-right: 1px solid #ddd;
+} */
+</style>
+
 <script>
 import axios from "axios";
-import DxButton from "devextreme-vue/button";
-import DxTextBox from "devextreme-vue/text-box";
-// import DxAccordion from "devextreme-vue/accordion";
+import { DxBox, DxItem } from "devextreme-vue/box";
+
 import notify from "devextreme/ui/notify";
-import {
-  DxDataGrid,
-  DxColumn,
-  DxColumnChooser,
-  DxColumnFixing,
-  DxExport,
-  DxSelection,
-  DxScrolling,
-  DxPaging,
-  DxPager,
-} from "devextreme-vue/data-grid";
 
 export default {
-  components: {
-    DxButton,
-    DxTextBox,
-    DxDataGrid,
-    DxColumn,
-    DxColumnChooser,
-    DxColumnFixing,
-    DxExport,
-    DxSelection,
-    DxScrolling,
-    DxPaging,
-    DxPager,
-    // DxAccordion,
-  },
+  components: { DxBox, DxItem },
   data() {
     return {
       programId: "HITOPS3-WEB-COM-S-LSTCNTINFO",

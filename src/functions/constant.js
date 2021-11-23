@@ -1,4 +1,10 @@
 export const API_URL = "http://localhost:8888/frameworkapi/api";
+export const LOGIN_URL = "http://localhost:8888/frameworkapi/login.do";
+
+export const STORAGE_LOGIN = "hitopswebLoggedInInfo";
+
+export const STORAGE_LOGIN_EXPIRE_TIME = 3 * 60 * 60 * 1000; // 8 hour
+// export const STORAGE_LOGIN_EXPIRE_TIME = 10 * 1000; // 10 sec
 
 export const MAIN_COD = {
   GATE_IO: "GIO",

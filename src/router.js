@@ -85,7 +85,7 @@ const router = new createRouter({
     },
     {
       path: "/",
-      redirect: "/home",
+      redirect: "/login-form",
     },
     {
       path: "/recovery",
@@ -100,6 +100,7 @@ const router = new createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+  console.log("beforeEach", to, from, next, auth.loggedIn());
   if (to.name === "login-form" && auth.loggedIn()) {
     next({ name: "home" });
   }

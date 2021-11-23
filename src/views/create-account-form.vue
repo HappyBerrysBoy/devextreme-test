@@ -4,7 +4,11 @@
       <dx-item
         data-field="email"
         editor-type="dxTextBox"
-        :editor-options="{ stylingMode: 'filled', placeholder: 'Email', mode: 'email' }"
+        :editor-options="{
+          stylingMode: 'filled',
+          placeholder: 'Email',
+          mode: 'email',
+        }"
       >
         <dx-required-rule message="Email is required" />
         <dx-email-rule message="Email is invalid" />
@@ -13,7 +17,11 @@
       <dx-item
         data-field="password"
         editor-type="dxTextBox"
-        :editor-options="{ stylingMode: 'filled', placeholder: 'Password', mode: 'password' }"
+        :editor-options="{
+          stylingMode: 'filled',
+          placeholder: 'Password',
+          mode: 'password',
+        }"
       >
         <dx-required-rule message="Password is required" />
         <dx-label :visible="false" />
@@ -21,7 +29,11 @@
       <dx-item
         data-field="confirmedPassword"
         editor-type="dxTextBox"
-        :editor-options="{ stylingMode: 'filled', placeholder: 'Confirm Password', mode: 'password' }"
+        :editor-options="{
+          stylingMode: 'filled',
+          placeholder: 'Confirm Password',
+          mode: 'password',
+        }"
       >
         <dx-required-rule message="Password is required" />
         <dx-custom-rule
@@ -32,8 +44,10 @@
       </dx-item>
       <dx-item>
         <template #default>
-          <div class='policy-info'>
-            By creating an account, you agree to the <router-link to="#">Terms of Service</router-link> and <router-link to="#">Privacy Policy</router-link>
+          <div class="policy-info">
+            By creating an account, you agree to the
+            <router-link to="#">Terms of Service</router-link> and
+            <router-link to="#">Privacy Policy</router-link>
           </div>
         </template>
       </dx-item>
@@ -56,8 +70,13 @@
       <template #createAccount>
         <div>
           <span class="dx-button-text">
-              <dx-loadIndicator v-if="loading" width="24px" height="24px" :visible="true" />
-              <span v-if="!loading">Create a new account</span>
+            <dx-loadIndicator
+              v-if="loading"
+              width="24px"
+              height="24px"
+              :visible="true"
+            />
+            <span v-if="!loading">Create a new account</span>
           </span>
         </div>
       </template>
@@ -73,12 +92,12 @@ import DxForm, {
   DxButtonOptions,
   DxCustomRule,
   DxRequiredRule,
-  DxEmailRule
-} from 'devextreme-vue/form';
-import DxLoadIndicator from 'devextreme-vue/load-indicator';
-import notify from 'devextreme/ui/notify';
-import { useRouter } from 'vue-router';
-import { ref, reactive } from 'vue';
+  DxEmailRule,
+} from "devextreme-vue/form";
+import DxLoadIndicator from "devextreme-vue/load-indicator";
+import notify from "devextreme/ui/notify";
+import { useRouter } from "vue-router";
+import { ref, reactive } from "vue";
 
 import auth from "../auth";
 
@@ -92,43 +111,43 @@ export default {
     DxRequiredRule,
     DxCustomRule,
     DxEmailRule,
-    DxLoadIndicator
+    DxLoadIndicator,
   },
   setup() {
     const router = useRouter();
-    
+
     const loading = ref(false);
     const formData = reactive({
-      email:"",
-      password:""
+      email: "",
+      password: "",
     });
 
     const onSubmit = async () => {
-    const { email, password } = formData;
-    loading.value = true;
+      const { email, password } = formData;
+      loading.value = true;
 
-    const result = await auth.createAccount(email, password);
-    loading.value = false;
+      const result = await auth.createAccount(email, password);
+      loading.value = false;
 
-    if (result.isOk) {
-      router.push("/login-form");
-    } else {
-      notify(result.message, 'error', 2000);
-    }
-  };
+      if (result.isOk) {
+        router.push("/login-form");
+      } else {
+        notify(result.message, "error", 2000);
+      }
+    };
 
     function confirmPassword(e) {
       return e.value === formData.password;
     }
-    
+
     return {
-        formData,
-        loading,
-        onSubmit,
-        confirmPassword
-    }
-  }
-}
+      formData,
+      loading,
+      onSubmit,
+      confirmPassword,
+    };
+  },
+};
 </script>
 
 <style lang="scss">

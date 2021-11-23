@@ -127,11 +127,78 @@
       </DxItem>
     </DxBox>
 
-    <DxBox id="btnBox" :align="end" :crossAlign="end">
+    <DxBox direction="row" width="100%">
+      <DxItem :baseSize="200">
+        <DxButton
+          id="inquiryBtn"
+          text="Pre In Out Detail"
+          :visible="visiblePreInOutDetail"
+          @click="preInOutDetail"
+        />
+      </DxItem>
+      <DxItem :baseSize="200">
+        <DxButton
+          id="inquiryBtn"
+          text="Status to Disable"
+          :visible="visibleStatusToDisable"
+          @click="statusToDisable"
+        />
+      </DxItem>
       <DxItem :baseSize="150">
         <DxButton id="inquiryBtn" text="Inquiry" @click="inquiryData" />
       </DxItem>
     </DxBox>
+
+    <DetailPopup v-model:visible="popupVisible" />
+
+    <!-- <DxPopup
+      v-model:visible="popupVisible"
+      :drag-enabled="false"
+      :close-on-outside-click="true"
+      :show-close-button="false"
+      :show-title="true"
+      :width="300"
+      :height="280"
+      container=".dx-viewport"
+      title="Pre Gate In/Out Detail Information"
+    >
+      <DxPosition
+        at="center center"
+        my="center center"
+        v-model:of="positionOf"
+      />
+      <p>
+      </p>
+      <DxToolbarItem
+        widget="dxButton"
+        toolbar="bottom"
+        location="before"
+        :options="emailButtonOptions"
+      />
+      <DxToolbarItem
+        widget="dxButton"
+        toolbar="bottom"
+        location="after"
+        :options="closeButtonOptions"
+      />
+      <p>
+        Full Name:
+        <span>{{ currentEmployee.FirstName }}</span>
+        <span>{{ currentEmployee.LastName }}</span>
+      </p>
+      <p>
+        Birth Date: <span>{{ currentEmployee.BirthDate }}</span>
+      </p>
+      <p>
+        Address: <span>{{ currentEmployee.Address }}</span>
+      </p>
+      <p>
+        Hire Date: <span>{{ currentEmployee.HireDate }}</span>
+      </p>
+      <p>
+        Position: <span>{{ currentEmployee.Position }}</span>
+      </p>
+    </DxPopup> -->
 
     <DxDataGrid
       id="gridData"
@@ -141,9 +208,10 @@
       :data-source="gridSource"
       :filter-enabled="true"
       :columns-auto-width="true"
+      :ref="dataGridRef"
       @exporting="onExporting"
+      @selection-changed="dataGridCellClick"
     >
-      <DxFilterRow :visible="true" />
       <DxColumnChooser :enabled="true" />
       <DxColumnFixing :enabled="true" />
       <DxScrolling row-rendering-mode="virtual" />
@@ -231,6 +299,7 @@
 import axios from "axios";
 import { mapState, mapActions, mapGetters } from "vuex";
 import { getMainCode, getGeneralCode } from "@/functions/commfunc";
+import DetailPopup from "./preInOutDetail";
 import {
   MAIN_COD,
   GENERAL_COD,
@@ -254,8 +323,11 @@ import {
   DxScrolling,
   DxPaging,
   DxPager,
-  DxFilterRow,
+  // DxFilterRow,
 } from "devextreme-vue/data-grid";
+// import { DxPopup, DxPosition, DxToolbarItem } from "devextreme-vue/popup";
+
+const dataGridRef = "dataGrid";
 
 export default {
   components: {
@@ -275,11 +347,19 @@ export default {
     DxItem,
     DxDateBox,
     DxLoadPanel,
-    DxFilterRow,
+    // DxPopup,
+    // DxPosition,
+    // DxToolbarItem,
+    // DxFilterRow,
   },
   data() {
     return {
+      dataGridRef,
+      popupVisible: false,
       loadingVisible: false,
+      visiblePreInOutDetail: true,
+      visibleStatusToDisable: true,
+      selectedRowsData: [],
       gridSource: {},
       gateIO: [],
       processTag: [],
@@ -288,6 +368,30 @@ export default {
       errCode: [],
       foe: [],
       oprList: [],
+      emailButtonOptions: {
+        icon: "email",
+        text: "Send",
+        onClick: () => {
+          const message = `Email is sent to ${this.currentEmployee.FirstName} ${this.currentEmployee.LastName}`;
+          notify(
+            {
+              message,
+              position: {
+                my: "center top",
+                at: "center top",
+              },
+            },
+            "success",
+            3000
+          );
+        },
+      },
+      closeButtonOptions: {
+        text: "Close",
+        onClick: () => {
+          this.popupVisible = false;
+        },
+      },
       programId: "HITOPS3-GTE-CTL-S-LSTPREGATEINOUT-UD",
       params: {
         MODE: "",
@@ -311,6 +415,9 @@ export default {
       doubleCount: "moduleA/doubleCount",
       tmnCod: "GlobalConstant/getTmnCod",
     }),
+    dataGrid: function() {
+      return this.$refs[dataGridRef].instance;
+    },
   },
   created() {
     getMainCode(MAIN_COD.GATE_IO, true, false, MAIN_COD_ITEM_TYP.COD_NAME)
@@ -405,6 +512,29 @@ export default {
       console.log(`doubleCount`, this.$store.getters["moduleA/doubleCount"]);
       console.log(`doubleCount`, this.doubleCount);
       notify(`The OK button was clicked ${this.$store.state.moduleA.count}`);
+    },
+    dataGridCellClick({ selectedRowsData }) {
+      const data = selectedRowsData[0];
+
+      console.log("dataGridCellClick", data);
+      console.log("dataGridCellClick rows", selectedRowsData);
+
+      // this.showEmployeeInfo = !!data;
+      // this.selectedRowNotes = data && data.Notes;
+    },
+    preInOutDetail() {
+      this.selectedRowsData = this.dataGrid.getSelectedRowsData();
+
+      console.log("this.selectedRowsData", this.selectedRowsData);
+
+      // ===== or when deferred selection is used =====
+      this.dataGrid.getSelectedRowsData().then((selectedRowsData) => {
+        // Your code goes here
+        console.log("selectedRowsData", selectedRowsData);
+      });
+    },
+    statusToDisable() {
+      this.popupVisible = !this.popupVisible;
     },
     inquiryData() {
       const param = JSON.parse(JSON.stringify(this.params));
